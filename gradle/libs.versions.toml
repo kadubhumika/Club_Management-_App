@@ -12,6 +12,17 @@ navigationCompose = "2.9.5"
 navigationRuntimeKtx = "2.9.5"
 
 [libraries]
+retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit", version = "2.9.0" }
+gson-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version = "2.9.0" }
+okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version = "5.0.0-alpha.11" }
+okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version = "5.0.0-alpha.11" }
+
+material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version = "1.5.1" }
+
+coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.7.3" }
+coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version = "1.7.3" }
+
+datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version = "1.1.0-alpha05" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
