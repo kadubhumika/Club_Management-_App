@@ -1,3 +1,5 @@
+
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -40,6 +42,18 @@ android {
 }
 
 dependencies {
+
+    implementation(libs.retrofit2)
+    implementation(libs.gson.converter)
+
+    implementation(libs.okhttp3)
+    implementation(libs.okhttp.logging)
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
+
+    implementation(libs.material.icons.extended)
+    implementation(libs.datastore.preferences)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
