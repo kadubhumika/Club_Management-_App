@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.club_mangement_app.On_BoardingScreen
 import com.example.club_mangement_app.ui.LoginScreen
 import com.example.club_mangement_app.ui.SignupScreen
 import com.example.club_mangement_app.SplashScreen
@@ -21,14 +22,18 @@ fun AppNavHost(sharedPrefManager: SharedPrefManager) {
             SplashScreen(navController = navController)
         }
 
+        composable("onboarding") {
+            On_BoardingScreen(navController = navController)
+        }
+
         composable("login") {
             LoginScreen(
                 sharedPrefManager = sharedPrefManager,
                 onLoginSuccess = { userRole ->
                     if (userRole == "Admin") {
-                        navController.navigate("admin_dashboard")
-                    } else {
-
+                        navController.navigate("admin_dashboard") {
+                            popUpTo("login") { inclusive = true }
+                        }
                     }
                 },
                 onSignupClick = {
