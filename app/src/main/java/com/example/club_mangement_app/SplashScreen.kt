@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.material3.Text
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.example.club_mangement_app.authentication.utils.SharedPrefManager
 
 
 @Composable
@@ -43,13 +44,44 @@ fun SplashScreen(navController: NavController) {
         )
     )
 
+    val context = navController.context
+
+
+
     LaunchedEffect(Unit) {
-        startAnimation=true
-        delay(2000)  // 2 seconds
-        navController.navigate("onboarding") {
-            popUpTo("splash") { inclusive = true }
+        startAnimation = true
+        delay(2000)
+
+        val sharedPrefManager = SharedPrefManager(context)
+        val user = sharedPrefManager.getUser()
+
+        if (!sharedPrefManager.hasSeenOnboarding()) {
+            navController.navigate("onboarding") {
+                popUpTo("splash") { inclusive = true }
+            }
+        } else if (user != null) {
+            when (user.role) {
+                "Admin" -> navController.navigate("admin_dashboard") {
+                    popUpTo("splash") { inclusive = true }
+                }
+                "Coordinator" -> navController.navigate("coordinator_dashboard") {
+                    popUpTo("splash") { inclusive = true }
+                }
+                "Member" -> navController.navigate("member_dashboard") {
+                    popUpTo("splash") { inclusive = true }
+                }
+                else -> navController.navigate("login") {
+                    popUpTo("splash") { inclusive = true }
+                }
+            }
+        } else {
+            navController.navigate("login") {
+                popUpTo("splash") { inclusive = true }
+            }
         }
     }
+
+
 
     val gradientBrush = Brush.verticalGradient(
         colors=listOf(

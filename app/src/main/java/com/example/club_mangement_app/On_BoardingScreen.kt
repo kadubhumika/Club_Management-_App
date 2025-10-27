@@ -26,6 +26,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.padding
+import com.example.club_mangement_app.authentication.utils.SharedPrefManager
 
 
 @Composable
@@ -64,7 +65,11 @@ fun On_BoardingScreen(navController: NavController){
 
  Button(
      onClick = {
-         navController.navigate("login")
+         val sharedPrefManager = SharedPrefManager(navController.context)
+         sharedPrefManager.setOnboardingSeen()
+         navController.navigate("login") {
+             popUpTo("onboarding") { inclusive = true }
+         }
      },
      modifier = Modifier
          .width(150.dp)
