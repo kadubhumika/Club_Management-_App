@@ -1,5 +1,5 @@
 [versions]
-agp = "8.13.0"
+agp = "8.9.2"
 kotlin = "2.0.21"
 coreKtx = "1.17.0"
 junit = "4.13.2"
@@ -11,6 +11,8 @@ composeBom = "2024.09.00"
 navigationCompose = "2.9.5"
 navigationRuntimeKtx = "2.9.5"
 foundationLayout = "1.9.4"
+uiText = "1.9.4"
+uiGraphics = "1.9.4"
 
 [libraries]
 retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit", version = "2.9.0" }
@@ -41,6 +43,8 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
+androidx-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "uiText" }
+ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "uiGraphics" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
