@@ -28,11 +28,12 @@ fun DSADashboardScreen(navController: NavController) {
     )
 
     Scaffold(
-        topBar = { AppTopBar(title = "DSA Coordinator Dashboard") },
+        topBar = { AppTopBar(title = "DSA Coordinator Dashboard", navController = navController) },
         bottomBar = {
             AppBottomNavBar(
                 selectedItem = selectedBottomNavItem,
-                onItemSelected = { index -> selectedBottomNavItem = index }
+                onItemSelected = { index -> selectedBottomNavItem = index },
+                navController = navController
             )
         },
         floatingActionButton = {

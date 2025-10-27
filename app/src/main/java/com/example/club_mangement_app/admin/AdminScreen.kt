@@ -35,15 +35,16 @@ fun AdminDashboardScreen(navController: NavController) {
 
     Scaffold(
         topBar = {
-            AppTopBar(title = "Admin Dashboard")
+            AppTopBar(title = "Admin Dashboard",navController = navController)
         },
         bottomBar = {
             AppBottomNavBar(
                 selectedItem = selectedBottomNavItem,
                 onItemSelected = { index ->
                     selectedBottomNavItem = index
-                    // Navigation logic would go here
-                }
+
+                },
+                navController = navController
             )
         }
     ) { paddingValues ->

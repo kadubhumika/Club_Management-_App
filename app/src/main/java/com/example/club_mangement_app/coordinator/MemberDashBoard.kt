@@ -71,15 +71,14 @@ fun MemberDashboardScreen(navController: NavController) {
 
     Scaffold(
 
-        topBar = { AppTopBar(title = "Member Personal Dashboard") },
-
+        topBar = { AppTopBar(title = "Member Personal Dashboard", navController = navController) },
         bottomBar = {
             AppBottomNavBar(
                 selectedItem = selectedBottomNavItem,
-                onItemSelected = { index -> selectedBottomNavItem = index }
+                onItemSelected = { selectedBottomNavItem = it },
+                navController = navController
             )
         },
-
         containerColor = Color(0xFFF0F0F5)
     ) { paddingValues ->
         LazyColumn(

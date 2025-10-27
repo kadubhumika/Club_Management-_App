@@ -20,6 +20,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.club_mangement_app.R
 import com.example.club_mangement_app.components.Member
 import com.example.club_mangement_app.components.ProfileCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+
 
 @Composable
 fun ClubInformationPage(navController: NavController) {
@@ -30,16 +35,32 @@ fun ClubInformationPage(navController: NavController) {
             .padding(16.dp)
     ) {
         // Header
-        Text(
-            text = "Club Information",
-            style = TextStyle(
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold
-            ),
+        // Header with Back Arrow
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
+                .fillMaxWidth()
                 .padding(vertical = 20.dp)
-        )
+        ) {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.Black
+                )
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = "Club Information",
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
+        }
 
         // Mission Card
         Card(
