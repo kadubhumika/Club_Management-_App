@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.club_mangement_app.authentication.network.ApiService
 import com.example.club_mangement_app.authentication.network.SignupRequest
 import com.example.club_mangement_app.authentication.utils.SharedPrefManager
@@ -19,6 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @Composable
 fun SignupScreen(
+    navController : NavController,
     sharedPrefManager: SharedPrefManager,
     onSignupSuccess: () -> Unit
 ) {
@@ -122,10 +124,12 @@ fun SignupScreen(
                     try {
                         val response = api.signup(SignupRequest(name, email, password, role, domain))
                         if (response.isSuccessful && response.body()?.success == true) {
-                            response.body()?.user?.let { sharedPrefManager.saveUser(it) }
-                            message = "Signup Successful 🎉"
-                            onSignupSuccess()
-                        } else {
+                            message = "Signup successful! Please login."
+                            navController.navigate("login") {
+                                popUpTo("signup") { inclusive = true }
+                            }
+                        }
+                        else {
                             message = response.body()?.message ?: "Signup Failed"
                         }
                     } catch (e: Exception) {

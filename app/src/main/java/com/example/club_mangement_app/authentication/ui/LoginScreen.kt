@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.club_mangement_app.authentication.network.ApiService
 import com.example.club_mangement_app.authentication.network.LoginRequest
 import com.example.club_mangement_app.authentication.utils.SharedPrefManager
@@ -22,6 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
+    navController: NavController,
     sharedPrefManager: SharedPrefManager,
     onLoginSuccess: (String) -> Unit,
     onSignupClick: () -> Unit
@@ -101,7 +103,32 @@ fun LoginScreen(
                                 val user = response.body()?.user
                                 if (user != null) {
                                     sharedPrefManager.saveUser(user)
-                                    onLoginSuccess(user.role)
+                                    when (user.role) {
+                                        "Admin" -> navController.navigate("admin_dashboard") {
+                                            popUpTo("login") { inclusive = true }
+                                        }
+                                        "Coordinator" -> when (user.domain) {
+                                            "Web" -> navController.navigate("web_coordinator_dashboard") {
+                                                popUpTo("login") { inclusive = true }
+                                            }
+                                            "Apps" -> navController.navigate("app_coordinator_dashboard") {
+                                                popUpTo("login") { inclusive = true }
+                                            }
+                                            "Graphics" -> navController.navigate("graphics_coordinator_dashboard") {
+                                                popUpTo("login") { inclusive = true }
+                                            }
+                                            "DSA" -> navController.navigate("dsa_coordinator_dashboard") {
+                                                popUpTo("login") { inclusive = true }
+                                            }
+                                            else -> navController.navigate("member_dashboard") {
+                                                popUpTo("login") { inclusive = true }
+                                            }
+                                        }
+                                        else -> navController.navigate("member_dashboard") {
+                                            popUpTo("login") { inclusive = true }
+                                        }
+                                    }
+
                                 }
                                 message = "Login Successful 🎉"
                             } else {
