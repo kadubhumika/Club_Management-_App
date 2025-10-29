@@ -49,37 +49,61 @@ fun SplashScreen(navController: NavController) {
 
 
     LaunchedEffect(Unit) {
-        startAnimation = true
         delay(2000)
 
+        val context = navController.context
         val sharedPrefManager = SharedPrefManager(context)
         val user = sharedPrefManager.getUser()
+        val hasSeenOnboarding = sharedPrefManager.hasSeenOnboarding()
 
-        if (!sharedPrefManager.hasSeenOnboarding()) {
-            navController.navigate("onboarding") {
-                popUpTo("splash") { inclusive = true }
-            }
-        } else if (user != null) {
-            when (user.role) {
-                "Admin" -> navController.navigate("admin_dashboard") {
-                    popUpTo("splash") { inclusive = true }
-                }
-                "Coordinator" -> navController.navigate("coordinator_dashboard") {
-                    popUpTo("splash") { inclusive = true }
-                }
-                "Member" -> navController.navigate("member_dashboard") {
-                    popUpTo("splash") { inclusive = true }
-                }
-                else -> navController.navigate("login") {
+        when {
+            !hasSeenOnboarding -> {
+                navController.navigate("onboarding") {
                     popUpTo("splash") { inclusive = true }
                 }
             }
-        } else {
-            navController.navigate("login") {
-                popUpTo("splash") { inclusive = true }
+
+            user != null -> {
+                when (user.role) {
+                    "Admin" -> navController.navigate("admin_dashboard") {
+                        popUpTo("splash") { inclusive = true }
+                    }
+
+                    "Coordinator" -> {
+                        when (user.domain) {
+                            "Web" -> navController.navigate("web_coordinator_dashboard") {
+                                popUpTo("splash") { inclusive = true }
+                            }
+                            "Apps" -> navController.navigate("app_coordinator_dashboard") {
+                                popUpTo("splash") { inclusive = true }
+                            }
+                            "Graphics" -> navController.navigate("graphics_coordinator_dashboard") {
+                                popUpTo("splash") { inclusive = true }
+                            }
+                            "DSA" -> navController.navigate("dsa_coordinator_dashboard") {
+                                popUpTo("splash") { inclusive = true }
+                            }
+                            else -> navController.navigate("member_dashboard") {
+                                popUpTo("splash") { inclusive = true }
+                            }
+                        }
+                    }
+
+                    else -> navController.navigate("member_dashboard") {
+                        popUpTo("splash") { inclusive = true }
+                    }
+                }
+            }
+
+            else -> {
+                navController.navigate("login") {
+                    popUpTo("splash") { inclusive = true }
+                }
             }
         }
     }
+
+
 
 
 
