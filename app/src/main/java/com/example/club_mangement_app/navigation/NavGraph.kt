@@ -52,7 +52,7 @@ fun AppNavHost(sharedPrefManager: SharedPrefManager) {
 
         composable("profile") {
             ProfileScreen(
-                onNavigate = {},  // You can wire bottom navigation later
+                onNavigate = {},
                 navController = navController
             )
         }
@@ -90,13 +90,15 @@ fun AppNavHost(sharedPrefManager: SharedPrefManager) {
                 },
                 onSignupClick = {
                     navController.navigate("signup")
-                }
+                },
+
+                navController = navController
             )
         }
 
         composable("signup") {
-            SignupScreen(sharedPrefManager = sharedPrefManager) {
-                // After signup → redirect based on role
+            SignupScreen(navController = navController,sharedPrefManager = sharedPrefManager) {
+
                 val user = sharedPrefManager.getUser()
                 if (user?.role == "Admin") {
                     navController.navigate("admin_dashboard") {

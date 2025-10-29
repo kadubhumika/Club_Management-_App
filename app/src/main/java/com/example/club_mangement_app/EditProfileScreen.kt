@@ -14,27 +14,36 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.club_mangement_app.authentication.utils.SharedPrefManager
 import com.example.club_mangement_app.components.DropdownBox
 import com.example.club_mangement_app.components.OutlinedTextBox
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditProfileScreen(navController: NavController) {
-    var fullName by remember { mutableStateOf("Alex Doe") }
-    var email by remember { mutableStateOf("alex.doe@example.com") }
-    var phone by remember { mutableStateOf("+1 123 456 7890") }
-    var bio by remember { mutableStateOf("Passionate about mobile development and creating intuitive user experiences.") }
-    var role by remember { mutableStateOf("Officer") }
-    var domain by remember { mutableStateOf("Tech") }
+    val context = LocalContext.current
+    val sharedPrefManager = remember { SharedPrefManager(context) }
+    val user = sharedPrefManager.getUser()
 
-    val roleOptions = listOf("Officer", "Manager", "Developer", "Designer")
-    val domainOptions = listOf("Tech", "Marketing", "Finance", "HR")
+    var fullName by remember { mutableStateOf(user?.name ?: "") }
+    var email by remember { mutableStateOf(user?.email ?: "") }
+    var role by remember { mutableStateOf(user?.role ?: "") }
+    var domain by remember { mutableStateOf(user?.domain ?: "") }
+    var phone by remember { mutableStateOf("+91 99324567") }
+    var bio by remember { mutableStateOf("Passionate Devloper Like to read books nad laern new things and tech") }
+
+
+
+
+    val roleOptions = listOf("Admin", "Coordinator", "Member", "Designer")
+    val domainOptions = listOf("App", "Web", "Graphics")
 
     Scaffold(
         topBar = {
@@ -57,11 +66,21 @@ fun EditProfileScreen(navController: NavController) {
                 OutlinedButton(onClick = { /* Cancel */ }) {
                     Text("Cancel", color = Color.Gray)
                 }
-                Button(onClick = { /* Save Changes */ },
-                    shape = RoundedCornerShape(50.dp)
-                ) {
+                Button(onClick = {
+                    val updatedUser = user?.copy(
+                        name = fullName,
+                        email = email,
+                        role = role,
+                        domain = domain
+                    )
+                    if (updatedUser != null) {
+                        sharedPrefManager.saveUser(updatedUser)
+                        navController.navigateUp()
+                    }
+                },shape = RoundedCornerShape(50.dp)) {
                     Text("Save Changes")
                 }
+
             }
         }
     ) { padding ->
@@ -102,6 +121,7 @@ fun EditProfileScreen(navController: NavController) {
             OutlinedTextBox(email, { email = it }, "Email Address", KeyboardType.Email)
             OutlinedTextBox(phone, { phone = it }, "Phone Number", KeyboardType.Phone)
             OutlinedTextBox(bio, { bio = it }, "Short Bio", maxLines = 3)
+
 
             DropdownBox("Role", roleOptions, role) { role = it }
             DropdownBox("Domain", domainOptions, domain) { domain = it }

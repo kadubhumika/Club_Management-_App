@@ -49,7 +49,7 @@ fun SplashScreen(navController: NavController) {
 
 
     LaunchedEffect(Unit) {
-        delay(2000)
+        delay(3000)
 
         val context = navController.context
         val sharedPrefManager = SharedPrefManager(context)
