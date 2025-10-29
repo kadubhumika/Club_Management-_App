@@ -8,8 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.example.club_mangement_app.authentication.network.ApiService
 import com.example.club_mangement_app.authentication.network.LoginRequest
 import com.example.club_mangement_app.authentication.utils.SharedPrefManager
@@ -24,7 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 fun LoginScreen(
     sharedPrefManager: SharedPrefManager,
     onLoginSuccess: (String) -> Unit,
-    onSignupClick: () -> Unit //
+    onSignupClick: () -> Unit
 ) {
     val retrofit = remember {
         Retrofit.Builder()
@@ -36,8 +36,6 @@ fun LoginScreen(
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var role by remember { mutableStateOf("Member") }
-    var domain by remember { mutableStateOf("DSA") }
     var message by remember { mutableStateOf("") }
 
     val coroutineScope = rememberCoroutineScope()
@@ -67,66 +65,6 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // --- Role Dropdown ---
-        var roleExpanded by remember { mutableStateOf(false) }
-        ExposedDropdownMenuBox(
-            expanded = roleExpanded,
-            onExpandedChange = { roleExpanded = !roleExpanded },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            TextField(
-                value = role,
-                onValueChange = {},
-                label = { Text("Role") },
-                readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = roleExpanded) },
-                modifier = Modifier.menuAnchor()
-            )
-            ExposedDropdownMenu(expanded = roleExpanded, onDismissRequest = { roleExpanded = false }) {
-                listOf("Admin", "Coordinator", "Member").forEach { selectionOption ->
-                    DropdownMenuItem(
-                        text = { Text(selectionOption) },
-                        onClick = {
-                            role = selectionOption
-                            roleExpanded = false
-                        }
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // --- Domain Dropdown ---
-        var domainExpanded by remember { mutableStateOf(false) }
-        ExposedDropdownMenuBox(
-            expanded = domainExpanded,
-            onExpandedChange = { domainExpanded = !domainExpanded },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            TextField(
-                value = domain,
-                onValueChange = {},
-                label = { Text("Domain") },
-                readOnly = true,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = domainExpanded) },
-                modifier = Modifier.menuAnchor()
-            )
-            ExposedDropdownMenu(expanded = domainExpanded, onDismissRequest = { domainExpanded = false }) {
-                listOf("Apps", "Web", "Graphics", "DSA").forEach { selectionOption ->
-                    DropdownMenuItem(
-                        text = { Text(selectionOption) },
-                        onClick = {
-                            domain = selectionOption
-                            domainExpanded = false
-                        }
-                    )
-                }
-            }
-        }
-
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
@@ -134,7 +72,7 @@ fun LoginScreen(
                 coroutineScope.launch {
                     try {
                         val response = withContext(Dispatchers.IO) {
-                            api.login(LoginRequest(email, password, role, domain))
+                            api.login(LoginRequest(email, password, "", "")) // No role/domain here
                         }
                         withContext(Dispatchers.Main) {
                             if (response.isSuccessful && response.body()?.success == true) {
@@ -162,7 +100,6 @@ fun LoginScreen(
         Text(message, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
 
         Spacer(modifier = Modifier.height(16.dp))
-
 
         Row(
             modifier = Modifier.fillMaxWidth(),
