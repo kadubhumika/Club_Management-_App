@@ -18,18 +18,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.club_mangement_app.components.AppBottomNavBar
 import com.example.club_mangement_app.components.AppTopBar
 
 @Composable
 fun ProfileScreen(
-    onNavigate: (Int) -> Unit = {}
+    onNavigate: (Int) -> Unit, navController: NavController
 ) {
     var selectedBottomNavItem by remember { mutableStateOf(3) }
 
     Scaffold(
         topBar = {
-            AppTopBar(title = "Profile")
+            AppTopBar(title = "Profile", navController = navController)
         },
         bottomBar = {
             AppBottomNavBar(
@@ -37,7 +38,10 @@ fun ProfileScreen(
                 onItemSelected = { index ->
                     selectedBottomNavItem = index
                     onNavigate(index)
-                }
+
+
+                },
+                navController = navController
             )
         }
     ) { paddingValues ->
@@ -51,7 +55,7 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(24.dp))
             ContributionMapSection()
             Spacer(modifier = Modifier.height(32.dp))
-            EditProfileButton()
+            EditProfileButton(navController=navController)
         }
     }
 }
@@ -218,9 +222,9 @@ fun ContributionLegendBox(color: Color) {
 }
 
 @Composable
-fun EditProfileButton() {
+fun EditProfileButton(navController : NavController) {
     Button(
-        onClick = { /* Handle edit profile */ },
+        onClick = { navController.navigate("edit_profile") },
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp)
@@ -244,8 +248,3 @@ fun EditProfileButton() {
     }
 }
 
-@Preview(showBackground=true, showSystemUi=true)
-@Composable
-fun ProfileScreenPreview() {
-    ProfileScreen(onNavigate = {})
-}

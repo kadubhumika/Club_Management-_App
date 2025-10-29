@@ -14,6 +14,7 @@ import com.example.club_mangement_app.admin.AdminDashboardScreen
 import com.example.club_mangement_app.authentication.ui.SettingsScreen
 import com.example.club_mangement_app.authentication.utils.SharedPrefManager
 import com.example.club_mangement_app.chat.ChatScreen
+import com.example.club_mangement_app.contributionMap.ProfileScreen
 import com.example.club_mangement_app.coordinator.DSADashboardScreen
 import com.example.club_mangement_app.coordinator.MemberDashboardScreen
 import com.example.club_mangement_app.info.ClubInformationPage
@@ -48,6 +49,14 @@ fun AppNavHost(sharedPrefManager: SharedPrefManager) {
             val sharedPrefManager = SharedPrefManager(context)
             SettingsScreen(navController, sharedPrefManager)
         }
+
+        composable("profile") {
+            ProfileScreen(
+                onNavigate = {},  // You can wire bottom navigation later
+                navController = navController
+            )
+        }
+
 
 
 

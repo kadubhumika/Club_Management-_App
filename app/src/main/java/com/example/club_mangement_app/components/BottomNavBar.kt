@@ -33,7 +33,7 @@ fun AppBottomNavBar(
                         0 -> navController.navigate("dashboard") { launchSingleTop = true }
                         1 -> navController.navigate("tasks") { launchSingleTop = true }
                         2 -> navController.navigate("chat") { launchSingleTop = true }
-                        3 -> navController.navigate("edit_profile") { launchSingleTop = true }
+                        3 -> navController.navigate("profile") { launchSingleTop = true }
                         4 -> navController.navigate("settings") { launchSingleTop = true }
                     }
                 }
