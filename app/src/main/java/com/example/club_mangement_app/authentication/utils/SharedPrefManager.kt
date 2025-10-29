@@ -28,6 +28,11 @@ class SharedPrefManager (context : Context){
 
     fun clearUser() { clear() }
 
+    fun logout() {
+        prefs.edit().clear().apply()
+    }
+
+
     fun hasSeenOnboarding(): Boolean {
         return prefs.getBoolean("seen_onboarding", false)
     }

@@ -22,24 +22,27 @@ fun SignupScreen(
     sharedPrefManager: SharedPrefManager,
     onSignupSuccess: () -> Unit
 ) {
-
     val retrofit = remember {
         Retrofit.Builder()
-            .baseUrl("https://swagserver.co.in/") // Replace with your API base URL
+            .baseUrl("https://swagserver.co.in/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
     val api = retrofit.create(ApiService::class.java)
 
-    //  variables
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var role by remember { mutableStateOf("Member") }
     var domain by remember { mutableStateOf("DSA") }
     var message by remember { mutableStateOf("") }
+    var loading by remember { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
+
+    fun isCollegeEmail(email: String): Boolean {
+        return email.endsWith("@sggs.ac.in", ignoreCase = true)
+    }
 
     Column(
         modifier = Modifier
@@ -47,65 +50,104 @@ fun SignupScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
+        Text(
+            text = "Create College Account 🎓",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 24.dp)
+        )
+
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
-            label = { Text("Name") },
+            label = { Text("Full Name") },
             modifier = Modifier.fillMaxWidth()
         )
+
         Spacer(modifier = Modifier.height(8.dp))
+
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") },
+            label = { Text("College Email (e.g. 2024bcs095@sggs.ac.in)") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
+
         Spacer(modifier = Modifier.height(8.dp))
+
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Password") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
+
         Spacer(modifier = Modifier.height(8.dp))
+
         DropdownMenuBox(
             label = "Role",
             options = listOf("Admin", "Coordinator", "Member"),
             selectedOption = role,
             onOptionSelected = { role = it }
         )
+
         Spacer(modifier = Modifier.height(8.dp))
+
         DropdownMenuBox(
             label = "Domain",
             options = listOf("Apps", "Web", "Graphics", "DSA"),
             selectedOption = domain,
             onOptionSelected = { domain = it }
         )
+
         Spacer(modifier = Modifier.height(16.dp))
+
         Button(
             onClick = {
+                if (name.isBlank() || email.isBlank() || password.isBlank()) {
+                    message = "Please fill all fields"
+                    return@Button
+                }
+                if (!isCollegeEmail(email)) {
+                    message = "Only SGGS college emails are allowed (e.g. 2024bcs095@sggs.ac.in)"
+                    return@Button
+                }
+
                 coroutineScope.launch {
+                    loading = true
                     try {
                         val response = api.signup(SignupRequest(name, email, password, role, domain))
                         if (response.isSuccessful && response.body()?.success == true) {
                             response.body()?.user?.let { sharedPrefManager.saveUser(it) }
-                            message = response.body()?.message ?: "Signup Successful"
+                            message = "Signup Successful 🎉"
                             onSignupSuccess()
                         } else {
                             message = response.body()?.message ?: "Signup Failed"
                         }
                     } catch (e: Exception) {
                         message = e.localizedMessage ?: "Error occurred"
+                    } finally {
+                        loading = false
                     }
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !loading
         ) {
-            Text("Sign Up")
+            if (loading) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(20.dp)
+                )
+            } else {
+                Text("Sign Up")
+            }
         }
+
         Spacer(modifier = Modifier.height(8.dp))
         Text(message)
     }

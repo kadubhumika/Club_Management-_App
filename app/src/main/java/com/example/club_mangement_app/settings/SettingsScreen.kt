@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.club_mangement_app.authentication.utils.SharedPrefManager
 import com.example.club_mangement_app.components.AppBottomNavBar
 import com.example.club_mangement_app.components.AppTopBar
 
@@ -29,12 +30,13 @@ fun SettingsScreen(
 
     Scaffold(
         topBar = {
-            AppTopBar(title = "Settings")
+            AppTopBar(title = "Settings",navController = navController)
         },
         bottomBar = {
             AppBottomNavBar(
                 selectedItem = 4,
-                onItemSelected = onNavigate
+                onItemSelected = onNavigate,
+                navController = navController
             )
         }
     ) { paddingValues ->
@@ -119,7 +121,12 @@ fun SettingsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
-                    .clickable { /* Handle logout */ },
+                    .clickable {  val context = navController.context
+                        val sharedPrefManager = SharedPrefManager(context)
+                        sharedPrefManager.logout()
+                        navController.navigate("login") {
+                            popUpTo(0) { inclusive = true }
+                        } },
                 color = Color(0xFFFFE5E5),
                 shape = MaterialTheme.shapes.medium
             ) {

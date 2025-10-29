@@ -37,8 +37,13 @@ fun LoginScreen(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
+    var loading by remember { mutableStateOf(false) }
 
     val coroutineScope = rememberCoroutineScope()
+
+    fun isCollegeEmail(email: String): Boolean {
+        return email.endsWith("@sggs.ac.in", ignoreCase = true)
+    }
 
     Column(
         modifier = Modifier
@@ -46,13 +51,19 @@ fun LoginScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
+        Text(
+            text = "Welcome Back 👋",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 24.dp)
+        )
 
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") },
+            label = { Text("College Email (e.g. 2024bcs095@sggs.ac.in)") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -62,17 +73,28 @@ fun LoginScreen(
             onValueChange = { password = it },
             label = { Text("Password") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
+                if (!isCollegeEmail(email)) {
+                    message = "Please use your college email (e.g. 2024bcs095@sggs.ac.in)"
+                    return@Button
+                }
+                if (password.isBlank()) {
+                    message = "Please enter your password"
+                    return@Button
+                }
+
                 coroutineScope.launch {
+                    loading = true
                     try {
                         val response = withContext(Dispatchers.IO) {
-                            api.login(LoginRequest(email, password, "", "")) // No role/domain here
+                            api.login(LoginRequest(email, password, "", ""))
                         }
                         withContext(Dispatchers.Main) {
                             if (response.isSuccessful && response.body()?.success == true) {
@@ -81,19 +103,29 @@ fun LoginScreen(
                                     sharedPrefManager.saveUser(user)
                                     onLoginSuccess(user.role)
                                 }
-                                message = "Login Successful"
+                                message = "Login Successful 🎉"
                             } else {
-                                message = response.body()?.message ?: "Login Failed"
+                                message = response.body()?.message ?: "Invalid credentials"
                             }
                         }
                     } catch (e: Exception) {
-                        message = e.localizedMessage ?: "Error"
+                        message = e.localizedMessage ?: "Network error"
+                    } finally {
+                        loading = false
                     }
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !loading
         ) {
-            Text("Login")
+            if (loading) {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(20.dp)
+                )
+            } else {
+                Text("Login")
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
