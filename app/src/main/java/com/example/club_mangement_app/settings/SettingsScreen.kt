@@ -23,7 +23,8 @@ import com.example.club_mangement_app.components.AppTopBar
 
 @Composable
 fun SettingsScreen(
-    onNavigate: (Int) -> Unit, navController: NavController
+    onNavigate: (Int) -> Unit = {},
+    navController: NavController
 ) {
     var pushNotifications by remember { mutableStateOf(true) }
     var darkMode by remember { mutableStateOf(false) }
@@ -123,8 +124,8 @@ fun SettingsScreen(
                     .padding(horizontal = 16.dp)
                     .clickable {  val context = navController.context
                         val sharedPrefManager = SharedPrefManager(context)
-                        sharedPrefManager.logout()
-                        navController.navigate("login") {
+                        sharedPrefManager.resetOnboarding()
+                        navController.navigate("onboarding") {
                             popUpTo(0) { inclusive = true }
                         } },
                 color = Color(0xFFFFE5E5),
