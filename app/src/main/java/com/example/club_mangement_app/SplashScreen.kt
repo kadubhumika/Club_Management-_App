@@ -1,58 +1,52 @@
 package com.example.club_mangement_app
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
-import androidx.navigation.NavController
-import com.example.club_mangement_app.R
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.material3.Text
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.club_mangement_app.authentication.utils.SharedPrefManager
-
+import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavController) {
 
     var startAnimation by remember { mutableStateOf(false) }
-    val alphaAnim = animateFloatAsState(
+
+    val alphaAnim by animateFloatAsState(
         targetValue = if (startAnimation) 1f else 0f,
-        animationSpec = tween(durationMillis= 1000)
+        animationSpec = tween(durationMillis = 1000), label = ""
     )
 
-    val scaleAnim = animateFloatAsState(
-        targetValue = if (startAnimation) 1f else 0f,
-        animationSpec = tween(
-            durationMillis =  800,
-            easing = FastOutSlowInEasing
-        )
+    val scaleAnim by animateFloatAsState(
+        targetValue = if (startAnimation) 1f else 0.6f,
+        animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing),
+        label = ""
     )
-
-    val context = navController.context
-
-
 
     LaunchedEffect(Unit) {
-        delay(3000)
+        startAnimation = true
+        delay(2500)
 
-        val context = navController.context
-        val sharedPrefManager = SharedPrefManager(context)
+        val sharedPrefManager = SharedPrefManager(navController.context)
         val user = sharedPrefManager.getUser()
         val hasSeenOnboarding = sharedPrefManager.hasSeenOnboarding()
 
@@ -104,11 +98,8 @@ fun SplashScreen(navController: NavController) {
     }
 
 
-
-
-
     val gradientBrush = Brush.verticalGradient(
-        colors=listOf(
+        colors = listOf(
             Color(0xFFB8B8D1),
             Color(0xFF7BA5DD),
             Color(0xFF9BA5D6),
@@ -116,44 +107,47 @@ fun SplashScreen(navController: NavController) {
         )
     )
 
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .background(gradientBrush)
+            .background(gradientBrush),
+        color = Color.Transparent
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .background(gradientBrush)
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally){
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-            Image(
-                painter = painterResource(id = R.drawable.outline_crowdsource_24),
-                contentDescription = "App Logo",
-                modifier = Modifier
-                    .size(180.dp)
-                    .scale(scaleAnim.value)
-                    .alpha(alphaAnim.value)
-            )
+                Image(
+                    painter = painterResource(id = R.drawable.outline_crowdsource_24),
+                    contentDescription = "App Logo",
+                    modifier = Modifier
+                        .size(180.dp)
+                        .scale(scaleAnim)
+                        .alpha(alphaAnim)
+                )
 
-            Spacer(modifier=Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
-            Text(
-                text="Club Management App",
-                fontSize=28.sp,
-                fontWeight=FontWeight.Bold,
-                color=Color.White,
-                modifier=Modifier.alpha(alphaAnim.value)
-            )
-        }
+                Text(
+                    text = "Club Management App",
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    modifier = Modifier.alpha(alphaAnim)
+                )
+            }
         }
     }
 }
 
-@Preview(showBackground=true, showSystemUi= true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun SplashScreenPreview(){
-    val navController=rememberNavController()
-    SplashScreen(navController=navController)
+fun SplashScreenPreview() {
+    val navController = rememberNavController()
+    SplashScreen(navController = navController)
 }

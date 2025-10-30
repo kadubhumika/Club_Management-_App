@@ -14,11 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.club_mangement_app.authentication.utils.SharedPrefManager
 import com.example.club_mangement_app.components.AppBottomNavBar
 import com.example.club_mangement_app.components.AppTopBar
 
@@ -62,6 +64,10 @@ fun ProfileScreen(
 
 @Composable
 fun ProfileHeader() {
+    val context = LocalContext.current
+    val sharedPrefManager = remember { SharedPrefManager(context) }
+    val user = sharedPrefManager.getUser()
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -87,28 +93,28 @@ fun ProfileHeader() {
 
         Spacer(modifier = Modifier.width(20.dp))
 
-        // Profile Info
+       // damnn broo goo workk now
         Column {
             Text(
-                text = "Ethan Carter",
+                text = user?.name ?: "Unknown User",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "Software Engineer",
+                text = user?.role ?: "No role assigned",
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
-                text = "Development",
+                text = user?.domain ?: "No domain",
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "ethan.carter@example.com",
+                text = user?.email ?: "No email found",
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

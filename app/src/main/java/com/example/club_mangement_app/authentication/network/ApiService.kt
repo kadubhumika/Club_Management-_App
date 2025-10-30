@@ -15,9 +15,8 @@ data class SignupRequest(
 
 data class LoginRequest(
     val email: String,
-    val password: String,
-    val role: String,
-    val domain: String
+    val password: String
+
 )
 
 data class ApiResponse<T>(

@@ -11,13 +11,14 @@ import com.example.club_mangement_app.ui.LoginScreen
 import com.example.club_mangement_app.ui.SignupScreen
 import com.example.club_mangement_app.SplashScreen
 import com.example.club_mangement_app.admin.AdminDashboardScreen
-import com.example.club_mangement_app.authentication.ui.SettingsScreen
+import com.example.club_mangement_app.settings.SettingsScreen
 import com.example.club_mangement_app.authentication.utils.SharedPrefManager
 import com.example.club_mangement_app.chat.ChatScreen
 import com.example.club_mangement_app.contributionMap.ProfileScreen
 import com.example.club_mangement_app.coordinator.DSADashboardScreen
 import com.example.club_mangement_app.coordinator.MemberDashboardScreen
 import com.example.club_mangement_app.info.ClubInformationPage
+import com.example.club_mangement_app.settings.SettingsScreen
 
 
 @Composable
@@ -47,7 +48,10 @@ fun AppNavHost(sharedPrefManager: SharedPrefManager) {
         composable("settings") {
             val context = LocalContext.current
             val sharedPrefManager = SharedPrefManager(context)
-            SettingsScreen(navController, sharedPrefManager)
+            SettingsScreen(
+                onNavigate = {},
+                navController = navController
+            )
         }
 
         composable("profile") {

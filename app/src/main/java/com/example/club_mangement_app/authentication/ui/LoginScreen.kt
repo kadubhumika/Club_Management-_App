@@ -96,7 +96,7 @@ fun LoginScreen(
                     loading = true
                     try {
                         val response = withContext(Dispatchers.IO) {
-                            api.login(LoginRequest(email, password, "", ""))
+                            api.login(LoginRequest(email, password))
                         }
                         withContext(Dispatchers.Main) {
                             if (response.isSuccessful && response.body()?.success == true) {

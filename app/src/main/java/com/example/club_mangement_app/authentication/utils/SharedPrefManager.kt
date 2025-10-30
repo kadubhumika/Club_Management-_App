@@ -15,6 +15,10 @@ class SharedPrefManager (context : Context){
         val json = Gson().toJson(user)
         sharedPref.edit().putString("user_data", json).apply()
     }
+    fun resetOnboarding() {
+        sharedPref.edit().putBoolean("seen_onboarding", false).apply()
+    }
+
 
     fun getUser(): User? {
         val json = sharedPref.getString("user_data", null)
