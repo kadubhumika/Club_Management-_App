@@ -1,43 +1,17 @@
 package com.example.club_mangement_app.coordinator
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.TaskAlt
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,7 +25,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.club_mangement_app.R
+import com.example.club_mangement_app.components.*
 
 data class WebTask(
     val title: String,
@@ -73,12 +50,13 @@ data class WebBottomNavItem(
     val route: String
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Web_Coordinator_Screen() {
-    val selectedFilter = remember { mutableStateOf("All") }
+fun Web_Coordinator_Screen(navController: NavController) {
 
-    val tasks = listOf(
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    var selectedBottomNavItem by remember { mutableStateOf(0) }
+
+    val webTasks = listOf(
         WebTask(
             title = "Update website's events page",
             status = WebTaskStatus.PENDING,
@@ -102,13 +80,6 @@ fun Web_Coordinator_Screen() {
         )
     )
 
-    val bottomNavItems = listOf(
-        WebBottomNavItem("Dashboard", Icons.Default.Dashboard, "dashboard"),
-        WebBottomNavItem("Tasks", Icons.Default.TaskAlt, "tasks"),
-        WebBottomNavItem("Chat", Icons.AutoMirrored.Filled.Chat, "chat"),
-        WebBottomNavItem("Profile", Icons.Default.Person, "profile"),
-        WebBottomNavItem("Settings", Icons.Default.Settings, "settings")
-    )
     val fontFamily = FontFamily(
         Font(R.font.f2, FontWeight.Medium),
         Font(R.font.f4, FontWeight.Thin),
@@ -120,107 +91,39 @@ fun Web_Coordinator_Screen() {
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "web Domain Dashboard",
-                        fontFamily = fontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { /* Handle menu */ }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.outline_crowdsource_24),
-                            contentDescription = "club management app",
-                            tint = Color(0xFF4245F0),
-                            modifier = Modifier.size(32.dp)
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { /* Handle notifications */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Notifications,
-                            contentDescription = "Notifications",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFF8F9FA), // Light grayish background
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
+            AppTopBar(
+                title = "App Coordinator Dashboard", navController = navController,
+                fontFamily = FontFamily
+            )
+        },
+        bottomBar = {
+            AppBottomNavBar(
+                selectedItem = selectedBottomNavItem,
+                onItemSelected = { index -> selectedBottomNavItem = index },
+                navController = navController
             )
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { /* Handle add task */ },
-                containerColor = Color(0xFFFBBC05),
-                modifier = Modifier.padding(bottom = 80.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add Task",
-                    tint = Color.White
-                )
-            }
-        },
-        bottomBar = {
-            BottomAppBar(
-                containerColor = Color(0xFFF8F9FA), // Light grayish background
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.outline,
-                        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
-                    )
-            ) {
-                bottomNavItems.forEach { item ->
-                    WebBottomNavItem(
-                        item = item,
-                        isSelected = item.label == "Dashboard",
-                        onItemClick = { /* Handle navigation */ }
-                    )
-                }
-            }
+            WebAddAssignmentFAB(onClick = { navController.navigate("assignTaskRoute") })
         }
-    ) { innerPadding ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
-                .padding(innerPadding)
+                .padding(paddingValues)
                 .fillMaxSize()
-                .background(Color(0xFFF1F3F4)) // Light grayish background for content area
+                .background(Color(0xFFF8FAFC))
         ) {
-            // Filter Chips
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                listOf("All", "Pending", "In Progress", "Done").forEach { filter ->
-                    WebFilterChip(
-                        text = filter,
-                        isSelected = filter == selectedFilter.value,
-                        onClick = { selectedFilter.value = filter }
-                    )
-                }
-            }
 
-            // Task List
+            StatusTabRow(
+                selectedTabIndex = selectedTabIndex,
+                onTabSelected = { selectedTabIndex = it }
+            )
+
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(tasks) { task ->
+                items(webTasks) { task ->
                     WebTaskCard(task = task)
                 }
             }
@@ -228,42 +131,64 @@ fun Web_Coordinator_Screen() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WebFilterChip(
-    text: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
+fun WebAppTopBar(
+    title: String,
+    navController: NavController,
+    fontFamily: FontFamily
 ) {
-    val backgroundColor = if (isSelected) {
-        Color(0xFFFBBC05) // Solid yellow when selected
-    } else {
-        Color(0xFFE8EAED) // Light gray for unselected chips
-    }
-
-    val textColor = if (isSelected) {
-        Color.Black // Black text for better contrast on yellow
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    }
-
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(backgroundColor)
-            .border(
-                width = 1.dp,
-                color = if (isSelected) Color(0xFFFBBC05) else Color.Transparent,
-                shape = RoundedCornerShape(16.dp)
+    TopAppBar(
+        title = {
+            Text(
+                text = title,
+                fontFamily = fontFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+                color = MaterialTheme.colorScheme.onSurface
             )
-            .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        contentAlignment = Alignment.Center
+        },
+        navigationIcon = {
+            IconButton(onClick = { navController.popBackStack() }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_crowdsource_24),
+                    contentDescription = "club management app",
+                    tint = Color(0xFF4245F0),
+                    modifier = Modifier.size(32.dp)
+                )
+            }
+        },
+        actions = {
+            IconButton(onClick = { /* Handle notifications */ }) {
+                Icon(
+                    imageVector = Icons.Default.Notifications,
+                    contentDescription = "Notifications",
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color(0xFFF8F9FA),
+            titleContentColor = MaterialTheme.colorScheme.onSurface
+        )
+    )
+}
+
+@Composable
+fun WebAddAssignmentFAB(onClick: () -> Unit) {
+    FloatingActionButton(
+        onClick = onClick,
+        containerColor = Color(0xFFFBBC05),
+        modifier = Modifier
+            .padding(bottom = 80.dp)
+            .offset(x =  5.dp , y = 80.dp)
     ) {
-        Text(
-            text = text,
-            color = textColor,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = "Add Task",
+            tint = Color.White
         )
     }
 }
@@ -293,7 +218,7 @@ fun WebTaskCard(task: WebTask) {
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFFFBBC05)) // Yellow background for avatar
+                    .background(Color(0xFFFBBC05))
             ) {
                 Icon(
                     imageVector = Icons.Default.Person,
@@ -301,7 +226,7 @@ fun WebTaskCard(task: WebTask) {
                     modifier = Modifier
                         .size(24.dp)
                         .align(Alignment.Center),
-                    tint = Color.Black // Black icon for better contrast on yellow
+                    tint = Color.Black
                 )
             }
 
@@ -323,8 +248,6 @@ fun WebTaskCard(task: WebTask) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-
-            // Status Chip
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(16.dp))
@@ -342,54 +265,8 @@ fun WebTaskCard(task: WebTask) {
     }
 }
 
-@Composable
-fun WebBottomNavItem(
-    item: WebBottomNavItem,
-    isSelected: Boolean,
-    onItemClick: () -> Unit
-) {
-    val textColor = if (isSelected) {
-        Color(0xFFFBBC05) // Yellow color for selected state
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    }
-
-    val iconColor = if (isSelected) {
-        Color(0xFFFBBC05) // Yellow color for selected state
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    }
-
-    Column(
-        modifier = Modifier
-            .padding(vertical = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        IconButton(
-            onClick = onItemClick,
-            modifier = Modifier.size(24.dp)
-        ) {
-            Icon(
-                imageVector = item.icon,
-                contentDescription = item.label,
-                tint = iconColor,
-                modifier = Modifier.size(24.dp)
-            )
-        }
-        Text(
-            text = item.label,
-            color = textColor,
-            fontSize = 12.sp,
-            fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
-fun Web_Coordinator_ScreenPreview() {
-    MaterialTheme {
-        Web_Coordinator_Screen()
-    }
+fun PreviewWeb_Coordinator_Screen() {
+    Web_Coordinator_Screen(rememberNavController())
 }

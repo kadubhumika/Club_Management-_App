@@ -85,7 +85,6 @@ data class Task(
     val priority: Priority,
     val isCompleted: Boolean = false
 )
-
 enum class Priority {
     HIGH, MEDIUM, LOW
 }
@@ -449,6 +448,7 @@ fun AssignTaskSection(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()

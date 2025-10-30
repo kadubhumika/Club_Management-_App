@@ -1,66 +1,31 @@
 package com.example.club_mangement_app.coordinator
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Dashboard
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.TaskAlt
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.club_mangement_app.R
-
-val fontFamily = FontFamily(
-    Font(R.font.f2, FontWeight.Normal),
-    Font(R.font.f4, FontWeight.Thin),
-    Font(R.font.f3, FontWeight.SemiBold),
-    Font(R.font.italic, FontWeight.Light),
-    Font(R.font.variable, FontWeight.Medium),
-    Font(R.font.playfairdisplay_bold, FontWeight.Bold)
-)
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.club_mangement_app.components.AppBottomNavBar
+import com.example.club_mangement_app.components.AppTopBar
+import com.example.club_mangement_app.components.StatusTabRow
 
 data class GraphicsTask(
     val title: String,
@@ -76,15 +41,13 @@ enum class GraphicsTaskStatus(val displayName: String, val color: Color, val bgC
     DONE("Done", Color(0xFF66BB6A), Color(0x3366BB6A))
 }
 
-data class GraphicsBottomNavItem(
-    val label: String,
-    val icon: ImageVector,
-    val route: String
-)
+@Composable
+fun Graphics_Coordinator_Screen(navController: NavController) {
 
-// Function to get sample graphics tasks
-fun getSampleGraphicsTasks(): List<GraphicsTask> {
-    return listOf(
+    var selectedTabIndex by remember { mutableStateOf(0) }
+    var selectedBottomNavItem by remember { mutableStateOf(0) }
+
+    val graphicsTasks = listOf(
         GraphicsTask(
             title = "Design Event Poster",
             status = GraphicsTaskStatus.PENDING,
@@ -105,103 +68,38 @@ fun getSampleGraphicsTasks(): List<GraphicsTask> {
             assignee = "Peter Jones",
             assigneeAvatar = "https://example.com/avatar3.jpg",
             deadline = "2023-10-29"
-        ),
-        GraphicsTask(
-            title = "Update Website Banner",
-            status = GraphicsTaskStatus.DONE,
-            assignee = "John Doe",
-            assigneeAvatar = "https://example.com/avatar4.jpg",
-            deadline = "2023-10-25"
-        ),
-        GraphicsTask(
-            title = "Create Event Flyer",
-            status = GraphicsTaskStatus.PENDING,
-            assignee = "Sarah Wilson",
-            assigneeAvatar = "https://example.com/avatar5.jpg",
-            deadline = "2023-10-30"
-        ),
-        GraphicsTask(
-            title = "Design Social Media Story",
-            status = GraphicsTaskStatus.IN_PROGRESS,
-            assignee = "Mike Brown",
-            assigneeAvatar = "https://example.com/avatar6.jpg",
-            deadline = "2023-10-26"
         )
     )
-}
 
-// Function to get filtered tasks based on status
-fun getFilteredGraphicsTasks(tasks: List<GraphicsTask>, filter: String): List<GraphicsTask> {
-    return when (filter) {
-        "Pending" -> tasks.filter { it.status == GraphicsTaskStatus.PENDING }
-        "In Progress" -> tasks.filter { it.status == GraphicsTaskStatus.IN_PROGRESS }
-        "Done" -> tasks.filter { it.status == GraphicsTaskStatus.DONE }
-        else -> tasks
+    val filteredTasks = when (selectedTabIndex) {
+        0 -> graphicsTasks // All tasks
+        1 -> graphicsTasks.filter { it.status == GraphicsTaskStatus.PENDING }
+        2 -> graphicsTasks.filter { it.status == GraphicsTaskStatus.IN_PROGRESS }
+        3 -> graphicsTasks.filter { it.status == GraphicsTaskStatus.DONE }
+        else -> graphicsTasks
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Graphics_Coordinator_Screen() {
-    val selectedFilter = remember { mutableStateOf("All") }
-    val tasks = remember { getSampleGraphicsTasks() }
-    val filteredTasks = remember(selectedFilter.value) {
-        getFilteredGraphicsTasks(tasks, selectedFilter.value)
-    }
-
-    val bottomNavItems = listOf(
-        GraphicsBottomNavItem("Dashboard", Icons.Default.Dashboard, "dashboard"),
-        GraphicsBottomNavItem("Tasks", Icons.Default.TaskAlt, "tasks"),
-        GraphicsBottomNavItem("Chat", Icons.AutoMirrored.Filled.Chat, "chat"),
-        GraphicsBottomNavItem("Profile", Icons.Default.Person, "profile"),
-        GraphicsBottomNavItem("Settings", Icons.Default.Settings, "settings")
-    )
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Graphics Dashboard",
-                        fontFamily = fontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { /* Handle menu */ }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.outline_crowdsource_24),
-                            contentDescription = "club management app",
-                            tint = Color(0xFF4245F0),
-                            modifier = Modifier.size(32.dp)
-                        )
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { /* Handle notifications */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Notifications,
-                            contentDescription = "Notifications",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFF8F9FA), // Light grayish background
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
-                )
+            AppTopBar(
+                title = "Graphics Coordinator Dashboard", navController = navController,
+                fontFamily = FontFamily
             )
         },
-
+        bottomBar = {
+            AppBottomNavBar(
+                selectedItem = selectedBottomNavItem,
+                onItemSelected = { index -> selectedBottomNavItem = index },
+                navController = navController
+            )
+        },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Handle add task */ },
+                onClick = { navController.navigate("assignTaskRoute") },
                 containerColor = Color(0xFF800080), // Purple
-                modifier = Modifier.padding(bottom = 80.dp)
+                modifier = Modifier
+                    .padding(bottom = 80.dp)
+                    .offset(x = 5.dp, y = 80.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -209,103 +107,29 @@ fun Graphics_Coordinator_Screen() {
                     tint = Color.White
                 )
             }
-        },
-        bottomBar = {
-            BottomAppBar(
-                containerColor = Color(0xFFF8F9FA), // Light grayish background
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.outline,
-                        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
-                    )
-            ) {
-                bottomNavItems.forEach { item ->
-                    GraphicsBottomNavItem(
-                        item = item,
-                        isSelected = item.label == "Dashboard",
-                        onItemClick = { /* Handle navigation */ }
-                    )
-                }
-            }
         }
-    ) { innerPadding ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
-                .padding(innerPadding)
+                .padding(paddingValues)
                 .fillMaxSize()
-                .background(Color(0xFFF1F3F4)) // Light grayish background for content area
+                .background(Color(0xFFF8FAFC))
         ) {
-            // Filter Chips
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                listOf("All", "Pending", "In Progress", "Done").forEach { filter ->
-                    GraphicsFilterChip(
-                        text = filter,
-                        isSelected = filter == selectedFilter.value,
-                        onClick = { selectedFilter.value = filter }
-                    )
-                }
-            }
 
-            // Task List
+            StatusTabRow(
+                selectedTabIndex = selectedTabIndex,
+                onTabSelected = { selectedTabIndex = it }
+            )
+
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(filteredTasks) { task ->
                     GraphicsTaskCard(task = task)
                 }
             }
         }
-    }
-}
-
-@Composable
-fun GraphicsFilterChip(
-    text: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    val backgroundColor = if (isSelected) {
-        Color(0xFF800080) // Purple when selected
-    } else {
-        Color(0xFFE8EAED) // Light gray for unselected chips
-    }
-
-    val textColor = if (isSelected) {
-        Color.White
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    }
-
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(backgroundColor)
-            .border(
-                width = 1.dp,
-                color = if (isSelected) Color(0xFF800080) else Color.Transparent,
-                shape = RoundedCornerShape(16.dp)
-            )
-            .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text,
-            color = textColor,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium,
-            fontFamily = fontFamily
-        )
     }
 }
 
@@ -356,18 +180,16 @@ fun GraphicsTaskCard(task: GraphicsTask) {
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 2,
-                    fontFamily = fontFamily
+                    maxLines = 2
                 )
                 Text(
                     text = "Deadline: ${task.deadline}",
                     fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontFamily = fontFamily
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
-            // Status Chip
+            // Status Chip with dot indicator
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(16.dp))
@@ -388,8 +210,7 @@ fun GraphicsTaskCard(task: GraphicsTask) {
                         text = task.status.displayName,
                         color = task.status.color,
                         fontSize = 12.sp,
-                        fontWeight = FontWeight.Medium,
-                        fontFamily = fontFamily
+                        fontWeight = FontWeight.Medium
                     )
                 }
             }
@@ -397,55 +218,8 @@ fun GraphicsTaskCard(task: GraphicsTask) {
     }
 }
 
-@Composable
-fun GraphicsBottomNavItem(
-    item: GraphicsBottomNavItem,
-    isSelected: Boolean,
-    onItemClick: () -> Unit
-) {
-    val textColor = if (isSelected) {
-        Color(0xFF800080) // Purple color for selected state
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    }
-
-    val iconColor = if (isSelected) {
-        Color(0xFF800080) // Purple color for selected state
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    }
-
-    Column(
-        modifier = Modifier
-            .padding(vertical = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        IconButton(
-            onClick = onItemClick,
-            modifier = Modifier.size(24.dp)
-        ) {
-            Icon(
-                imageVector = item.icon,
-                contentDescription = item.label,
-                tint = iconColor,
-                modifier = Modifier.size(24.dp)
-            )
-        }
-        Text(
-            text = item.label,
-            color = textColor,
-            fontSize = 12.sp,
-            fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
-            fontFamily = fontFamily
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
-fun Graphics_Coordinator_ScreenPreview() {
-    MaterialTheme {
-        Graphics_Coordinator_Screen()
-    }
+fun PreviewGraphics_Coordinator_Screen() {
+    Graphics_Coordinator_Screen(rememberNavController())
 }
