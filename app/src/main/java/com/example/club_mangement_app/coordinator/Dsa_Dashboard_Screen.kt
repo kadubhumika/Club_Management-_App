@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -28,7 +29,10 @@ fun DSADashboardScreen(navController: NavController) {
     )
 
     Scaffold(
-        topBar = { AppTopBar(title = "DSA Coordinator Dashboard", navController = navController) },
+        topBar = { AppTopBar(
+            title = "DSA Coordinator Dashboard", navController = navController,
+            fontFamily = FontFamily,
+        ) },
         bottomBar = {
             AppBottomNavBar(
                 selectedItem = selectedBottomNavItem,

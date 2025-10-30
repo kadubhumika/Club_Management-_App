@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter // <-- CORRECT TYPE IMPORTED
 // import androidx.compose.ui.graphics.vector.ImageVector // <-- REMOVED, NOT NEEDED
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable

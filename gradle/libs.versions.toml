@@ -13,6 +13,7 @@ navigationRuntimeKtx = "2.9.5"
 foundationLayout = "1.9.4"
 uiText = "1.9.4"
 uiGraphics = "1.9.4"
+foundation = "1.9.4"
 
 [libraries]
 retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit", version = "2.9.0" }
@@ -45,6 +46,7 @@ androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navig
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
 androidx-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "uiText" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "uiGraphics" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

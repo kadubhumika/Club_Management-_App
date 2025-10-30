@@ -1,5 +1,7 @@
 package com.example.club_mangement_app.admin
 
+import android.graphics.fonts.Font
+import android.graphics.fonts.FontFamily
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -35,7 +37,10 @@ fun AdminDashboardScreen(navController: NavController) {
 
     Scaffold(
         topBar = {
-            AppTopBar(title = "Admin Dashboard",navController = navController)
+            AppTopBar(
+                title = "Admin Dashboard", navController = navController,
+                fontFamily = androidx.compose.ui.text.font.FontFamily
+            )
         },
         bottomBar = {
             AppBottomNavBar(
@@ -85,6 +90,7 @@ fun AdminDashboardScreen(navController: NavController) {
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
