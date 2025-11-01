@@ -11,13 +11,16 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.club_mangement_app.authentication.utils.SharedPrefManager
 
 
 data class MemberTaskData(
@@ -37,10 +40,18 @@ data class NotificationData(
 
 
 @Composable
-fun MemberProfileCard(userName: String) {
-    Column(modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)) {
+fun MemberProfileCard() {
+    val context = LocalContext.current
+    val sharedPrefManager = remember { SharedPrefManager(context) }
+    val user = sharedPrefManager.getUser()
 
+    val userName = user?.name ?: "User"
 
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp)
+    ) {
         Text(
             text = "Welcome back,",
             fontSize = 16.sp,
@@ -51,9 +62,9 @@ fun MemberProfileCard(userName: String) {
             fontWeight = FontWeight.Bold,
             fontSize = 28.sp
         )
-
     }
 }
+
 
 
 @Composable

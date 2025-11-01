@@ -1,5 +1,6 @@
 package com.example.club_mangement_app.navigation
 
+import CoordinatorScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
@@ -15,9 +16,14 @@ import com.example.club_mangement_app.settings.SettingsScreen
 import com.example.club_mangement_app.authentication.utils.SharedPrefManager
 import com.example.club_mangement_app.chat.ChatScreen
 import com.example.club_mangement_app.contributionMap.ProfileScreen
-import com.example.club_mangement_app.coordinator.DSADashboardScreen
+import com.example.club_mangement_app.coordinator.App_Coordinator_Screen
+
+import com.example.club_mangement_app.coordinator.Dsa_Coordinator_Screen
+import com.example.club_mangement_app.coordinator.Graphics_Coordinator_Screen
 import com.example.club_mangement_app.coordinator.MemberDashboardScreen
+import com.example.club_mangement_app.coordinator.Web_Coordinator_Screen
 import com.example.club_mangement_app.info.ClubInformationPage
+import com.example.club_mangement_app.notification.NotificationScreen
 import com.example.club_mangement_app.settings.SettingsScreen
 
 
@@ -31,12 +37,18 @@ fun AppNavHost(sharedPrefManager: SharedPrefManager) {
             SplashScreen(navController = navController)
         }
 
+        composable("tasks") {
+            CoordinatorScreen(navController = navController)
+        }
+
+
         composable("onboarding") {
             On_BoardingScreen(navController = navController)
         }
 
         composable("edit_profile") {
             EditProfileScreen(navController = navController)
+
         }
 
         composable("chat") {
@@ -129,7 +141,18 @@ fun AppNavHost(sharedPrefManager: SharedPrefManager) {
         }
 
 
-        composable("dsa_coordinator_dashboard") { DSADashboardScreen(navController) }
+        composable("dsa_coordinator_dashboard") { Dsa_Coordinator_Screen(navController) }
+
+        composable("app_coordinator_dashboard") { App_Coordinator_Screen(navController) }
+
+        composable("graphics_coordinator_dashboard") { Graphics_Coordinator_Screen(navController) }
+
+
+        composable("web_coordinator_dashboard") { Web_Coordinator_Screen(navController) }
+
+        composable("notifications") {
+            NotificationScreen(navController = navController)
+        }
 
 
 

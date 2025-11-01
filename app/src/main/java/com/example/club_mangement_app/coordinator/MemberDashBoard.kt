@@ -95,7 +95,7 @@ fun MemberDashboardScreen(navController: NavController) {
 
             item {
                 Spacer(modifier = Modifier.height(8.dp))
-                MemberProfileCard(userName = "Praveen")
+                MemberProfileCard()
             }
 
 

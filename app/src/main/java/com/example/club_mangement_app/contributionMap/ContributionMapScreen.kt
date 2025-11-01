@@ -11,18 +11,23 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
+
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.club_mangement_app.authentication.utils.SharedPrefManager
 import com.example.club_mangement_app.components.AppBottomNavBar
 import com.example.club_mangement_app.components.AppTopBar
+import fontFamily
 
 @Composable
 fun ProfileScreen(
@@ -32,7 +37,7 @@ fun ProfileScreen(
 
     Scaffold(
         topBar = {
-            AppTopBar(title = "Profile", navController = navController)
+            AppTopBar(title = "Profile", navController = navController, fontFamily = FontFamily.Companion)
         },
         bottomBar = {
             AppBottomNavBar(
@@ -83,13 +88,27 @@ fun ProfileHeader() {
                 .background(Color(0xFFFFDDB3)),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = "Profile",
-                modifier = Modifier.size(60.dp),
-                tint = Color(0xFF8B6F47)
-            )
+            val profileUrl = user?.profile_img
+
+            if (!profileUrl.isNullOrEmpty()) {
+                AsyncImage(
+                    model = profileUrl,
+                    contentDescription = "Profile Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape)
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "Profile",
+                    modifier = Modifier.size(60.dp),
+                    tint = Color(0xFF8B6F47)
+                )
+            }
         }
+
 
         Spacer(modifier = Modifier.width(20.dp))
 
