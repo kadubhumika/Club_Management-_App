@@ -42,7 +42,7 @@ enum class AppTaskStatus(val displayName: String, val color: Color, val bgColor:
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun App_Coordinator_Screen() {
+fun App_Coordinator_Screen(navController: NavController) {
     val navController = rememberNavController()
     var selectedBottomNavItem by remember { mutableStateOf(0) }
     var selectedTabIndex by remember { mutableStateOf(0) }
@@ -224,10 +224,3 @@ fun AppTaskCard(task: AppTask) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun App_Coordinator_ScreenPreview() {
-    MaterialTheme {
-        App_Coordinator_Screen()
-    }
-}

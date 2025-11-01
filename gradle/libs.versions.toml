@@ -16,6 +16,8 @@ uiGraphics = "1.9.4"
 foundation = "1.9.4"
 
 [libraries]
+coil-compose = { module = "io.coil-kt:coil-compose", version = "2.7.0" }
+
 retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit", version = "2.9.0" }
 gson-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version = "2.9.0" }
 okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version = "5.0.0-alpha.11" }

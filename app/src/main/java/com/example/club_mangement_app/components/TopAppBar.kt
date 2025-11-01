@@ -37,7 +37,7 @@ fun AppTopBar(title: String, navController: NavController, fontFamily: FontFamil
             }
         },
         actions = {
-            IconButton(onClick = { /* Notifications click */ }) {
+            IconButton(onClick = {navController.navigate("notifications")  }) {
                 Icon(Icons.Default.Notifications, contentDescription = "Notifications")
             }
         },

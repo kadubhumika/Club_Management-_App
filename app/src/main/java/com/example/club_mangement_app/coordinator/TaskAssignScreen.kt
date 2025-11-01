@@ -62,6 +62,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.club_mangement_app.R
 import java.time.Instant
 import java.time.LocalDate
@@ -91,7 +92,7 @@ enum class Priority {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CoordinatorScreen() {
+fun CoordinatorScreen(navController: NavController) {
     var selectedMember by remember { mutableStateOf("Select member") }
     var taskName by remember { mutableStateOf("") }
     var selectedDeadline by remember { mutableStateOf<LocalDate?>(null) }
@@ -745,10 +746,3 @@ fun BottomNavItemView(item: BottomNavItem, onItemClick: () -> Unit, fontFamily: 
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CoordinatorScreenPreview() {
-    MaterialTheme {
-        CoordinatorScreen()
-    }
-}

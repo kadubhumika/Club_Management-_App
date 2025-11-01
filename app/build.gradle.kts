@@ -42,6 +42,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.coil.compose)
+
 
     implementation(libs.retrofit2)
     implementation(libs.gson.converter)

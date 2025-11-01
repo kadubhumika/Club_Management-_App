@@ -35,6 +35,7 @@ class SharedPrefManager (context : Context){
 
     fun logout() {
         sharedPref.edit().clear().apply()
+        setFirstLaunch(true)
     }
 
 
@@ -44,6 +45,30 @@ class SharedPrefManager (context : Context){
 
     fun setOnboardingSeen() {
         sharedPref.edit().putBoolean("seen_onboarding", true).apply()
+    }
+
+    fun isFirstLaunch(): Boolean {
+        return sharedPref.getBoolean("first_launch", true)
+    }
+
+    fun updateUserName(newName: String) {
+        val user = getUser()
+        user?.let {
+            it.name = newName
+            saveUser(it)
+        }
+    }
+
+    fun updateUserImage(newUrl: String) {
+        val user = getUser()
+        user?.let {
+            it.profile_img = newUrl
+            saveUser(it)
+        }
+    }
+
+    fun setFirstLaunch(value: Boolean) {
+        sharedPref.edit().putBoolean("first_launch", value).apply()
     }
 
 
